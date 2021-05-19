@@ -1,0 +1,2 @@
+class Politican < ApplicationRecord
+end
