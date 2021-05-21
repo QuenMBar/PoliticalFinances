@@ -1,0 +1,2 @@
+class CommitteeTransfersController < ApplicationController
+end

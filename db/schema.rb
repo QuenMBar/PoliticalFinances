@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_21_002412) do
+ActiveRecord::Schema.define(version: 2021_05_21_064931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,32 @@ ActiveRecord::Schema.define(version: 2021_05_21_002412) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["committee_id"], name: "index_cand_comm_linkings_on_committee_id"
     t.index ["politican_id"], name: "index_cand_comm_linkings_on_politican_id"
+  end
+
+  create_table "committee_transfers", force: :cascade do |t|
+    t.string "committee_id"
+    t.string "amndt_ind"
+    t.string "rpt_tp"
+    t.string "transaction_pgi"
+    t.bigint "image_num"
+    t.string "transaction_tp"
+    t.string "entity_tp"
+    t.string "name"
+    t.string "city"
+    t.string "state"
+    t.string "zip_code"
+    t.string "employer"
+    t.string "occupation"
+    t.bigint "transaction_dt"
+    t.float "transaction_amt"
+    t.string "other_id"
+    t.string "tran_id"
+    t.string "file_num"
+    t.string "memo_cd"
+    t.string "memo_text"
+    t.string "sub_id"
+    t.index ["committee_id"], name: "index_committee_transfers_on_committee_id"
+    t.index ["other_id"], name: "index_committee_transfers_on_other_id"
   end
 
   create_table "committees", primary_key: "comm_id", id: :string, force: :cascade do |t|

@@ -3,6 +3,7 @@
 # Committee.destroy_all
 # IndividualDonation.destroy_all
 # CandCommLinking.destroy_all
+CommitteeTransfer.destroy_all
 
 # puts 'Loading Committees and Pacs'
 
@@ -226,3 +227,16 @@
 #         end
 #     end
 # end
+
+puts 'Loading Committee Transfers'
+
+%w[itoth20.csv itoth22.csv].each do |file|
+    p file
+    begin
+        ActiveRecord::Base.connection.execute(
+            "COPY committee_transfers(committee_id,amndt_ind,rpt_tp,transaction_pgi,image_num,transaction_tp,entity_tp,name,city,state,zip_code,employer,occupation,transaction_dt,transaction_amt,other_id,tran_id,file_num,memo_cd,memo_text,sub_id) FROM '/home/qbeast360/FlatIronSE/FinalProject/PoliticalFinances/db/Data/CommTrans/#{file}' DELIMITER '|' CSV HEADER;",
+        )
+    rescue => exception
+        p exception
+    end
+end
