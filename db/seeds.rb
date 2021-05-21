@@ -3,7 +3,9 @@
 # Committee.destroy_all
 # IndividualDonation.destroy_all
 # CandCommLinking.destroy_all
-CommitteeTransfer.destroy_all
+# CommitteeTransfer.destroy_all
+# IndependentExpenditure.destroy_all
+# OperationCost.destroy_all
 
 # puts 'Loading Committees and Pacs'
 
@@ -228,15 +230,41 @@ CommitteeTransfer.destroy_all
 #     end
 # end
 
-puts 'Loading Committee Transfers'
+# puts 'Loading Committee Transfers'
 
-%w[itoth20.csv itoth22.csv].each do |file|
-    p file
-    begin
-        ActiveRecord::Base.connection.execute(
-            "COPY committee_transfers(committee_id,amndt_ind,rpt_tp,transaction_pgi,image_num,transaction_tp,entity_tp,name,city,state,zip_code,employer,occupation,transaction_dt,transaction_amt,other_id,tran_id,file_num,memo_cd,memo_text,sub_id) FROM '/home/qbeast360/FlatIronSE/FinalProject/PoliticalFinances/db/Data/CommTrans/#{file}' DELIMITER '|' CSV HEADER;",
-        )
-    rescue => exception
-        p exception
-    end
-end
+# %w[itoth20.csv itoth22.csv].each do |file|
+#     p file
+#     begin
+#         ActiveRecord::Base.connection.execute(
+#             "COPY committee_transfers(committee_id,amndt_ind,rpt_tp,transaction_pgi,image_num,transaction_tp,entity_tp,name,city,state,zip_code,employer,occupation,transaction_dt,transaction_amt,other_id,tran_id,file_num,memo_cd,memo_text,sub_id) FROM '/home/qbeast360/FlatIronSE/FinalProject/PoliticalFinances/db/Data/CommTrans/#{file}' DELIMITER '|' CSV HEADER;",
+#         )
+#     rescue => exception
+#         p exception
+#     end
+# end
+
+# puts 'Loading Operating Costs'
+
+# %w[oppexp20.csv oppexp22.csv].each do |file|
+#     p file
+#     begin
+#         ActiveRecord::Base.connection.execute(
+#             "COPY operation_costs(committee_id,amndt_ind,rpt_yr,rpt_tp,image_num,line_num,form_tp_cd,sched_tp_cd,name,city,state,zip_code,transaction_dt,transaction_amt,transaction_pgi,purpose,category,category_desc,memo_cd,memo_text,entity_tp,sub_id,file_num,tran_id,back_ref_tran_id,empty) FROM '/home/qbeast360/FlatIronSE/FinalProject/PoliticalFinances/db/Data/OppCost/#{file}' DELIMITER '|' CSV HEADER;",
+#         )
+#     rescue => exception
+#         p exception
+#     end
+# end
+
+# puts 'Loading Independent Expendatures'
+
+# %w[itpas20.csv itpas22.csv].each do |file|
+#     p file
+#     begin
+#         ActiveRecord::Base.connection.execute(
+#             "COPY independent_expenditures(committee_id,amndt_ind,rpt_tp,transaction_pgi,image_num,transaction_tp,entity_tp,name,city,state,zip_code,employer,occupation,transaction_dt,transaction_amt,other_id,politican_id,tran_id,file_num,memo_cd,memo_text,sub_id) FROM '/home/qbeast360/FlatIronSE/FinalProject/PoliticalFinances/db/Data/IndepExpend/#{file}' DELIMITER '|' CSV HEADER;",
+#         )
+#     rescue => exception
+#         p exception
+#     end
+# end

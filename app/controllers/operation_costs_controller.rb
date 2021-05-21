@@ -1,0 +1,2 @@
+class OperationCostsController < ApplicationController
+end

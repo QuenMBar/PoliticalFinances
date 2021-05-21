@@ -1,0 +1,2 @@
+class IndependentExpendituresController < ApplicationController
+end

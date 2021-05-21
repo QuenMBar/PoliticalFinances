@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_21_064931) do
+ActiveRecord::Schema.define(version: 2021_05_21_075944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,6 +81,34 @@ ActiveRecord::Schema.define(version: 2021_05_21_064931) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "independent_expenditures", force: :cascade do |t|
+    t.string "committee_id"
+    t.string "amndt_ind"
+    t.string "rpt_tp"
+    t.string "transaction_pgi"
+    t.bigint "image_num"
+    t.string "transaction_tp"
+    t.string "entity_tp"
+    t.string "name"
+    t.string "city"
+    t.string "state"
+    t.string "zip_code"
+    t.string "employer"
+    t.string "occupation"
+    t.string "transaction_dt"
+    t.float "transaction_amt"
+    t.string "other_id"
+    t.string "politican_id"
+    t.string "tran_id"
+    t.string "file_num"
+    t.string "memo_cd"
+    t.string "memo_text"
+    t.bigint "sub_id"
+    t.index ["committee_id"], name: "index_independent_expenditures_on_committee_id"
+    t.index ["other_id"], name: "index_independent_expenditures_on_other_id"
+    t.index ["politican_id"], name: "index_independent_expenditures_on_politican_id"
+  end
+
   create_table "individual_donations", force: :cascade do |t|
     t.string "committee_id"
     t.string "amend_ind"
@@ -105,6 +133,36 @@ ActiveRecord::Schema.define(version: 2021_05_21_064931) do
     t.string "memo_cd"
     t.index ["candidate_id"], name: "index_individual_donations_on_candidate_id"
     t.index ["committee_id"], name: "index_individual_donations_on_committee_id"
+  end
+
+  create_table "operation_costs", force: :cascade do |t|
+    t.string "committee_id"
+    t.string "amndt_ind"
+    t.integer "rpt_yr"
+    t.string "rpt_tp"
+    t.bigint "image_num"
+    t.string "line_num"
+    t.string "form_tp_cd"
+    t.string "sched_tp_cd"
+    t.string "name"
+    t.string "city"
+    t.string "state"
+    t.string "zip_code"
+    t.string "transaction_dt"
+    t.float "transaction_amt"
+    t.string "transaction_pgi"
+    t.string "purpose"
+    t.string "category"
+    t.string "category_desc"
+    t.string "memo_cd"
+    t.string "memo_text"
+    t.string "entity_tp"
+    t.bigint "sub_id"
+    t.string "file_num"
+    t.string "tran_id"
+    t.string "back_ref_tran_id"
+    t.string "empty"
+    t.index ["committee_id"], name: "index_operation_costs_on_committee_id"
   end
 
   create_table "politicans", primary_key: "cand_id", id: :string, force: :cascade do |t|
