@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_20_075325) do
+ActiveRecord::Schema.define(version: 2021_05_21_002412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "cand_comm_linkings", force: :cascade do |t|
+    t.string "committee_id"
+    t.string "politican_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["committee_id"], name: "index_cand_comm_linkings_on_committee_id"
+    t.index ["politican_id"], name: "index_cand_comm_linkings_on_politican_id"
+  end
 
   create_table "committees", primary_key: "comm_id", id: :string, force: :cascade do |t|
     t.string "comm_name"

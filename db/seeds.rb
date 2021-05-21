@@ -2,6 +2,7 @@
 # Politican.destroy_all
 # Committee.destroy_all
 # IndividualDonation.destroy_all
+# CandCommLinking.destroy_all
 
 # puts 'Loading Committees and Pacs'
 
@@ -205,5 +206,23 @@
 #         )
 #     rescue => exception
 #         p exception
+#     end
+# end
+
+# puts 'Creating Linking Table'
+
+# %w[ccl20.csv ccl22.csv].each do |file|
+#     p file
+#     csv_text = File.read(Rails.root.join('db', 'Data', 'Linking', file))
+#     csv = csv_text.split("\n")
+#     csv.each do |row|
+#         split_row = row.split('|')
+#         ccl = CandCommLinking.find_by(committee_id: split_row[3], politican_id: split_row[0])
+#         if !ccl
+#             ccl = CandCommLinking.new
+#             ccl.politican_id = split_row[0]
+#             ccl.committee_id = split_row[3]
+#             ccl.save
+#         end
 #     end
 # end
