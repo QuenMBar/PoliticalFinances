@@ -1,6 +1,6 @@
 class CreatePoliticans < ActiveRecord::Migration[6.1]
     def change
-        create_table :politicans do |t|
+        create_table :politicans, id: false do |t|
             t.string :cand_id
             t.string :cand_name
             t.string :cand_party
@@ -24,11 +24,13 @@ class CreatePoliticans < ActiveRecord::Migration[6.1]
             t.integer :elec_year
             t.string :cand_office
             t.string :cand_status
-            t.belongs_to :committee
+            t.string :committee_id, foreign_key: { to_table: :committees }
             t.string :camp_address
             t.integer :zip
 
             t.timestamps
         end
+        add_index :politicans, :committee_id
+        execute 'ALTER TABLE politicans ADD PRIMARY KEY (cand_id);'
     end
 end

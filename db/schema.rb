@@ -10,13 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_20_043919) do
+ActiveRecord::Schema.define(version: 2021_05_20_075325) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "committees", force: :cascade do |t|
-    t.string "comm_id"
+  create_table "committees", primary_key: "comm_id", id: :string, force: :cascade do |t|
     t.string "comm_name"
     t.string "comm_address"
     t.integer "comm_zip"
@@ -47,8 +46,33 @@ ActiveRecord::Schema.define(version: 2021_05_20_043919) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "politicans", force: :cascade do |t|
-    t.string "cand_id"
+  create_table "individual_donations", force: :cascade do |t|
+    t.string "committee_id"
+    t.string "amend_ind"
+    t.string "report_type"
+    t.string "indicator"
+    t.string "image"
+    t.string "trans_type"
+    t.string "entity_type"
+    t.string "name"
+    t.string "city"
+    t.string "state"
+    t.string "zip"
+    t.string "employ"
+    t.string "occu"
+    t.integer "date"
+    t.float "amount"
+    t.string "candidate_id"
+    t.string "note"
+    t.bigint "fec_id"
+    t.string "tran_id"
+    t.bigint "file_num"
+    t.string "memo_cd"
+    t.index ["candidate_id"], name: "index_individual_donations_on_candidate_id"
+    t.index ["committee_id"], name: "index_individual_donations_on_committee_id"
+  end
+
+  create_table "politicans", primary_key: "cand_id", id: :string, force: :cascade do |t|
     t.string "cand_name"
     t.string "cand_party"
     t.float "ttl_receipts"
@@ -71,7 +95,7 @@ ActiveRecord::Schema.define(version: 2021_05_20_043919) do
     t.integer "elec_year"
     t.string "cand_office"
     t.string "cand_status"
-    t.bigint "committee_id"
+    t.string "committee_id"
     t.string "camp_address"
     t.integer "zip"
     t.datetime "created_at", precision: 6, null: false

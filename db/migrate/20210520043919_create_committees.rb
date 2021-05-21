@@ -1,6 +1,6 @@
 class CreateCommittees < ActiveRecord::Migration[6.1]
     def change
-        create_table :committees do |t|
+        create_table :committees, id: false do |t|
             t.string :comm_id
             t.string :comm_name
             t.string :comm_address
@@ -31,5 +31,6 @@ class CreateCommittees < ActiveRecord::Migration[6.1]
 
             t.timestamps
         end
+        execute 'ALTER TABLE committees ADD PRIMARY KEY (comm_id);'
     end
 end
