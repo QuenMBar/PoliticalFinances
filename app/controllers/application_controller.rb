@@ -2,7 +2,7 @@ class ApplicationController < ActionController::API
     def current_user
         token = request.headers['token']
         begin
-            payload = JWT.decode token, 'myS3cr3t', true
+            payload = JWT.decode token, ENV['SUPER_SECRET_KEY'], true
         rescue JWT::VerificationError
             render json: { "msg": 'Login first..' }
             return nil

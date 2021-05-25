@@ -1,18 +1,22 @@
 class UsersController < ApplicationController
+    before_action :authorized, only: [:index]
+
     def create
+        user_params[:bio] = ''
         @user = User.create(user_params)
         if @user.persisted?
-            # token = JWT.encode({ :user_id => @user.id }, ENV['SUPER_SECRET_KEY'])
-            # render :json => { "token": token }
-            render json: { "msg": 'Now login..' }
+            render json: { "msg": 'Please Login' }
         else
-            render json: { "msg": 'Signup failed..' }
+            if User.find_by(username: user_params[:username])
+                render json: { "msg": 'Username Has Been Taken' }
+            else
+                render json: { "msg": 'Please Enter Password' }
+            end
         end
     end
 
     def index
-        @users = User.all
-        render json: UserSerializer.new(@users).serialized_json
+        render json: UserSerializer.new(current_user).serializable_hash.to_json
     end
 
     private
