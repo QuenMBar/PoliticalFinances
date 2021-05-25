@@ -1,4 +1,5 @@
 class CommitteeTransfer < ApplicationRecord
+    searchkick
     belongs_to :committee, class_name: 'Committee'
     belongs_to :other, class_name: 'Committee', optional: true
 

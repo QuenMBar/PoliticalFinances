@@ -1,4 +1,5 @@
 class IndependentExpenditure < ApplicationRecord
+    searchkick
     belongs_to :committee, class_name: 'Committee'
     belongs_to :other, class_name: 'Committee', optional: true
     belongs_to :politican, optional: true

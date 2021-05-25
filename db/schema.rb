@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_21_202249) do
+ActiveRecord::Schema.define(version: 2021_05_25_213953) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,14 @@ ActiveRecord::Schema.define(version: 2021_05_21_202249) do
     t.float "ind_exp"
     t.float "party_exp"
     t.float "nf_exp"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "counties", primary_key: "fids", id: :string, force: :cascade do |t|
+    t.string "name"
+    t.string "state"
+    t.integer "total_donated"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
@@ -202,6 +210,14 @@ ActiveRecord::Schema.define(version: 2021_05_21_202249) do
     t.string "bio"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "zip_codes", primary_key: "zip", id: :string, force: :cascade do |t|
+    t.string "county_id"
+    t.integer "total_donated"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["county_id"], name: "index_zip_codes_on_county_id"
   end
 
 end

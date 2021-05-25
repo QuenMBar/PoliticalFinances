@@ -6,6 +6,8 @@
 # CommitteeTransfer.destroy_all
 # IndependentExpenditure.destroy_all
 # OperationCost.destroy_all
+# County.destroy_all
+# ZipCode.destroy_all
 
 # puts 'Loading Committees and Pacs'
 
@@ -268,3 +270,61 @@
 #         p exception
 #     end
 # end
+
+# puts 'Creating counties and zips'
+
+# %w[ZIP-COUNTY-FIPS_2017-06.csv].each do |file|
+#     p file
+#     csv_text = File.read(Rails.root.join('db', 'Data', 'ZipCodes', file))
+#     csv = csv_text.split("\n")
+#     csv.each do |row|
+#         split_row = row.split(',')
+
+#         County.create(fids: split_row[3], name: split_row[1], state: split_row[2], total_donated: 0)
+#     end
+# end
+
+# %w[ZIP-COUNTY-FIPS_2017-06.csv].each do |file|
+#     p file
+#     csv_text = File.read(Rails.root.join('db', 'Data', 'ZipCodes', file))
+#     csv = csv_text.split("\n")
+#     csv.each do |row|
+#         split_row = row.split(',')
+
+#         ZipCode.create(zip: split_row[0], county_id: split_row[3], total_donated: 0)
+#     end
+# end
+
+# puts 'Totaling ammounts'
+# count = ZipCode.count
+# ZipCode.all.each_with_index do |zc, ind|
+#     begin
+#         p "#{ind} out of #{count} zipcodes"
+#         if zc.total_donated.zero?
+#             total_for_zip = 0
+#             IndividualDonation
+#                 .search(zc.zip, fields: [{ zip: :exact }], select: [:amount], scroll: '1m')
+#                 .scroll { |batch| total_for_zip += batch.reduce(0) { |sum, bi| sum + bi.amount } }
+#             zc.total_donated = total_for_zip
+#             zc.save
+#         end
+#     rescue => exception
+#         p exception
+#     end
+# end
+
+count = County.count
+County.all.each_with_index do |c, ind|
+    begin
+        p "#{ind} out of #{count} counties"
+
+        # if c.total_donated.zero?
+        total_for_county = 0
+        total_for_county = c.zip_codes.sum(:total_donated)
+        c.total_donated = total_for_county
+        c.save
+        # end
+    rescue => exception
+        p exception
+    end
+end
