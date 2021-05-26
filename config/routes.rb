@@ -6,5 +6,8 @@ Rails
         resources :sessions, only: [:create]
         post '/signup', to: 'users#create'
         post '/login', to: 'sessions#create'
+        resources :counties, only: %i[index show]
+        resources :zip_codes, only: %i[show]
+        post '/addlink', to: 'users#link'
         # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
     end

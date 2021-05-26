@@ -1,0 +1,2 @@
+class ZipCodeLinksController < ApplicationController
+end

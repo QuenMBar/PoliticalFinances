@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-    before_action :authorized, only: [:index]
+    before_action :authorized, only: %i[index link]
 
     def create
         user_params[:bio] = ''
@@ -19,9 +19,20 @@ class UsersController < ApplicationController
         render json: UserSerializer.new(current_user).serializable_hash.to_json
     end
 
+    def link
+        p user_params[:id]
+
+        case user_params[:type]
+        when 'county'
+            CountyLink.create(user: current_user, county_id: user_params[:id])
+        end
+        render json: { msg: 'done' }
+    end
+
     private
 
     def user_params
-        params.require(:user).permit(:username, :password)
+        params.require(:user).permit(:username, :password, :type, :id, :jwt)
+        # params.permit(:type, :id)
     end
 end

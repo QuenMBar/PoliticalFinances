@@ -313,18 +313,18 @@
 #     end
 # end
 
-count = County.count
-County.all.each_with_index do |c, ind|
-    begin
-        p "#{ind} out of #{count} counties"
+# count = County.count
+# County.all.each_with_index do |c, ind|
+#     begin
+#         p "#{ind} out of #{count} counties"
 
-        # if c.total_donated.zero?
-        total_for_county = 0
-        total_for_county = c.zip_codes.sum(:total_donated)
-        c.total_donated = total_for_county
-        c.save
-        # end
-    rescue => exception
-        p exception
-    end
-end
+#         # if c.total_donated.zero?
+#         total_for_county = 0
+#         total_for_county = c.zip_codes.sum(:total_donated)
+#         c.total_donated = total_for_county
+#         c.save
+#         # end
+#     rescue => exception
+#         p exception
+#     end
+# end

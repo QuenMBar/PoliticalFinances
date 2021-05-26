@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_25_213953) do
+ActiveRecord::Schema.define(version: 2021_05_26_182009) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,6 +89,15 @@ ActiveRecord::Schema.define(version: 2021_05_25_213953) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "county_links", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "county_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["county_id"], name: "index_county_links_on_county_id"
+    t.index ["user_id"], name: "index_county_links_on_user_id"
+  end
+
   create_table "independent_expenditures", force: :cascade do |t|
     t.string "committee_id"
     t.string "amndt_ind"
@@ -115,6 +124,15 @@ ActiveRecord::Schema.define(version: 2021_05_25_213953) do
     t.index ["committee_id"], name: "index_independent_expenditures_on_committee_id"
     t.index ["other_id"], name: "index_independent_expenditures_on_other_id"
     t.index ["politican_id"], name: "index_independent_expenditures_on_politican_id"
+  end
+
+  create_table "individual_donation_links", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "individual_donation_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["individual_donation_id"], name: "index_individual_donation_links_on_individual_donation_id"
+    t.index ["user_id"], name: "index_individual_donation_links_on_user_id"
   end
 
   create_table "individual_donations", force: :cascade do |t|
@@ -212,6 +230,15 @@ ActiveRecord::Schema.define(version: 2021_05_25_213953) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "zip_code_links", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "zip_code_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_zip_code_links_on_user_id"
+    t.index ["zip_code_id"], name: "index_zip_code_links_on_zip_code_id"
+  end
+
   create_table "zip_codes", primary_key: "zip", id: :string, force: :cascade do |t|
     t.string "county_id"
     t.integer "total_donated"
@@ -220,4 +247,8 @@ ActiveRecord::Schema.define(version: 2021_05_25_213953) do
     t.index ["county_id"], name: "index_zip_codes_on_county_id"
   end
 
+  add_foreign_key "county_links", "users"
+  add_foreign_key "individual_donation_links", "individual_donations"
+  add_foreign_key "individual_donation_links", "users"
+  add_foreign_key "zip_code_links", "users"
 end

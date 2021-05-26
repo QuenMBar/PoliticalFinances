@@ -4,6 +4,9 @@ class IndividualDonation < ApplicationRecord
     belongs_to :committee, class_name: 'Committee'
     belongs_to :candidate, class_name: 'Politican', optional: true
 
+    has_many :individual_donation_links
+    has_many :users, through: :individual_donation_links
+
     def search_data
         {
             name: name,
