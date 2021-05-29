@@ -9,5 +9,6 @@ Rails
         resources :counties, only: %i[index show]
         resources :zip_codes, only: %i[show]
         post '/addlink', to: 'users#link'
+        get '/geojson', to: 'counties#geojson'
         # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
     end

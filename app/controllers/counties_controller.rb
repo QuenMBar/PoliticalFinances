@@ -1,13 +1,16 @@
 class CountiesController < ApplicationController
+    include ActionController::Caching
+    caches_page :geojson
+
     def index
-        results =
-            County.search '*',
-                          page: request.headers['page'],
-                          per_page: request.headers['amount'],
-                          order: {
-                              total_donated: :desc,
-                          }
-        render json: CountyBulkSerializer.new(results).serializable_hash.to_json
+        # results =
+        #     County.search '*',
+        #                   page: request.headers['page'],
+        #                   per_page: request.headers['amount'],
+        #                   order: {
+        #                       total_donated: :desc,
+        #                   }
+        render json: CountyBulkSerializer.new(County.all).serializable_hash.to_json
     end
 
     def show
@@ -21,5 +24,29 @@ class CountiesController < ApplicationController
         end
 
         # render json: CountySerializer.new(results).serializable_hash.to_json
+    end
+
+    def geojson
+        geojson = { "type": 'FeatureCollection', "features": [] }
+        County.all.each do |c|
+            geojson[:features] << {
+                "type": 'Feature',
+                "geometry": {
+                    "type": 'Point',
+                    "coordinates": [c.lat, c.log],
+                },
+                "properties": {
+                    "name": c.name,
+                    "state": c.state,
+                    "FIPS": c.fids,
+                    "total_donated": c.total_donated,
+                    "dem_donation": c.dem_donation,
+                    "rep_donation": c.rep_donation,
+                    "other_donation": c.other_donation,
+                    "radius": c.total_donated / 8_000_000,
+                },
+            }
+        end
+        render json: geojson
     end
 end

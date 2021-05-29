@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_26_182009) do
+ActiveRecord::Schema.define(version: 2021_05_29_033037) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,9 +84,22 @@ ActiveRecord::Schema.define(version: 2021_05_26_182009) do
   create_table "counties", primary_key: "fids", id: :string, force: :cascade do |t|
     t.string "name"
     t.string "state"
-    t.integer "total_donated"
+    t.float "total_donated"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "dem_donation"
+    t.float "rep_donation"
+    t.float "other_donation"
+    t.float "log"
+    t.float "lat"
+    t.float "dem_donation_org"
+    t.float "rep_donation_org"
+    t.float "other_donation_org"
+    t.float "total_donated_org"
+    t.float "dem_donation_com"
+    t.float "rep_donation_com"
+    t.float "other_donation_com"
+    t.float "total_donated_com"
   end
 
   create_table "county_links", force: :cascade do |t|
@@ -241,9 +254,20 @@ ActiveRecord::Schema.define(version: 2021_05_26_182009) do
 
   create_table "zip_codes", primary_key: "zip", id: :string, force: :cascade do |t|
     t.string "county_id"
-    t.integer "total_donated"
+    t.float "total_donated"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.float "dem_donation"
+    t.float "rep_donation"
+    t.float "other_donation"
+    t.float "dem_donation_org"
+    t.float "rep_donation_org"
+    t.float "other_donation_org"
+    t.float "total_donated_org"
+    t.float "dem_donation_com"
+    t.float "rep_donation_com"
+    t.float "other_donation_com"
+    t.float "total_donated_com"
     t.index ["county_id"], name: "index_zip_codes_on_county_id"
   end
 

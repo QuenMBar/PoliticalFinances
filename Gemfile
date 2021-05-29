@@ -19,6 +19,7 @@ gem 'jsonapi-serializer'
 gem 'jwt'
 gem 'dotenv-rails'
 gem 'searchkick'
+gem "actionpack-page_caching"
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'

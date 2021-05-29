@@ -1,3 +1,5 @@
+require 'csv'
+
 # puts 'Deleting Current Data'
 # Politican.destroy_all
 # Committee.destroy_all
@@ -6,8 +8,8 @@
 # CommitteeTransfer.destroy_all
 # IndependentExpenditure.destroy_all
 # OperationCost.destroy_all
-# County.destroy_all
-# ZipCode.destroy_all
+County.destroy_all
+ZipCode.destroy_all
 
 # puts 'Loading Committees and Pacs'
 
@@ -271,60 +273,221 @@
 #     end
 # end
 
-# puts 'Creating counties and zips'
-
-# %w[ZIP-COUNTY-FIPS_2017-06.csv].each do |file|
-#     p file
-#     csv_text = File.read(Rails.root.join('db', 'Data', 'ZipCodes', file))
-#     csv = csv_text.split("\n")
-#     csv.each do |row|
-#         split_row = row.split(',')
-
-#         County.create(fids: split_row[3], name: split_row[1], state: split_row[2], total_donated: 0)
-#     end
-# end
-
-# %w[ZIP-COUNTY-FIPS_2017-06.csv].each do |file|
-#     p file
-#     csv_text = File.read(Rails.root.join('db', 'Data', 'ZipCodes', file))
-#     csv = csv_text.split("\n")
-#     csv.each do |row|
-#         split_row = row.split(',')
-
-#         ZipCode.create(zip: split_row[0], county_id: split_row[3], total_donated: 0)
-#     end
-# end
-
-# puts 'Totaling ammounts'
-# count = ZipCode.count
-# ZipCode.all.each_with_index do |zc, ind|
-#     begin
-#         p "#{ind} out of #{count} zipcodes"
-#         if zc.total_donated.zero?
-#             total_for_zip = 0
-#             IndividualDonation
-#                 .search(zc.zip, fields: [{ zip: :exact }], select: [:amount], scroll: '1m')
-#                 .scroll { |batch| total_for_zip += batch.reduce(0) { |sum, bi| sum + bi.amount } }
-#             zc.total_donated = total_for_zip
-#             zc.save
+# puts 'Fixing Committee Party Markings'
+# (1..8).each do |i|
+#     puts "#{i} loop through, #{Committee.where(comm_party: '').count} still dont have a party"
+#     Committee
+#         .search('*', where: { comm_party: '' }, scroll: '1m')
+#         .scroll do |batch|
+#             batch.each do |c|
+#                 party_amount = Hash.new
+#                 c
+#                     .committee_sent_transfers
+#                     .includes(:committee)
+#                     .each do |comt|
+#                         unless comt.committee.nil?
+#                             if party_amount.has_key? comt.committee.comm_party
+#                                 party_amount[comt.committee.comm_party] += 1
+#                             else
+#                                 party_amount[comt.committee.comm_party] = 1
+#                             end
+#                         end
+#                     end
+#                 key_val = party_amount.max_by { |k, v| v }
+#                 unless key_val.nil?
+#                     if key_val[0] != ''
+#                         c.comm_party = key_val[0]
+#                         c.save
+#                     end
+#                 end
+#             end
 #         end
-#     rescue => exception
-#         p exception
-#     end
 # end
 
-# count = County.count
-# County.all.each_with_index do |c, ind|
-#     begin
-#         p "#{ind} out of #{count} counties"
-
-#         # if c.total_donated.zero?
-#         total_for_county = 0
-#         total_for_county = c.zip_codes.sum(:total_donated)
-#         c.total_donated = total_for_county
-#         c.save
-#         # end
-#     rescue => exception
-#         p exception
-#     end
+# (1..4).each do |i|
+#     puts "#{i} loop through, #{Committee.where(comm_party: '').count} still dont have a party"
+#     Committee
+#         .search('*', where: { comm_party: '' }, scroll: '1m')
+#         .scroll do |batch|
+#             batch.each do |c|
+#                 party_amount = Hash.new
+#                 c
+#                     .committee_sent_transfers
+#                     .includes(:committee)
+#                     .each do |comt|
+#                         unless comt.committee.nil?
+#                             if party_amount.has_key? comt.committee.comm_party
+#                                 party_amount[comt.committee.comm_party] += 1
+#                             else
+#                                 party_amount[comt.committee.comm_party] = 1
+#                             end
+#                         end
+#                     end
+#                 key_val = party_amount.except('').max_by { |k, v| v }
+#                 unless key_val.nil?
+#                     if key_val[0] != ''
+#                         c.comm_party = key_val[0]
+#                         c.save
+#                     end
+#                 end
+#             end
+#         end
 # end
+
+puts 'Creating counties and zips'
+
+%w[ZIP-COUNTY-FIPS_2017-06.csv].each do |file|
+    p file
+    csv_text = File.read(Rails.root.join('db', 'Data', 'ZipCodes', file))
+    csv = csv_text.split("\n")
+    csv.each do |row|
+        split_row = row.split(',')
+
+        County.create(
+            fids: split_row[3],
+            name: split_row[1],
+            state: split_row[2],
+            total_donated: 0.0,
+            dem_donation: 0.0,
+            rep_donation: 0.0,
+            other_donation: 0.0,
+            total_donated_org: 0.0,
+            dem_donation_org: 0.0,
+            rep_donation_org: 0.0,
+            other_donation_org: 0.0,
+            total_donated_com: 0.0,
+            dem_donation_com: 0.0,
+            rep_donation_com: 0.0,
+            other_donation_com: 0.0,
+        )
+    end
+end
+
+%w[us-county-boundaries.csv].each do |file|
+    p file
+    table = CSV.parse(File.read(Rails.root.join('db', 'Data', 'ZipCodes', file)), headers: true)
+    table.each do |row|
+        begin
+            c = County.find(row[2].to_s)
+            if !!c
+                c.log = row[0].split(', ')[0].to_f
+                c.lat = row[0].split(', ')[1].to_f
+                c.save
+            end
+        rescue => exception
+            p exception
+        end
+    end
+end
+
+%w[ZIP-COUNTY-FIPS_2017-06.csv].each do |file|
+    p file
+    csv_text = File.read(Rails.root.join('db', 'Data', 'ZipCodes', file))
+    csv = csv_text.split("\n")
+    csv.each do |row|
+        split_row = row.split(',')
+
+        ZipCode.create(
+            zip: split_row[0],
+            county_id: split_row[3],
+            total_donated: 0.0,
+            dem_donation: 0.0,
+            rep_donation: 0.0,
+            other_donation: 0.0,
+            total_donated_org: 0.0,
+            dem_donation_org: 0.0,
+            rep_donation_org: 0.0,
+            other_donation_org: 0.0,
+            total_donated_com: 0.0,
+            dem_donation_com: 0.0,
+            rep_donation_com: 0.0,
+            other_donation_com: 0.0,
+        )
+    end
+end
+
+puts 'Totaling ammounts'
+count = ZipCode.count
+ZipCode.all.each_with_index do |zc, ind|
+    begin
+        p "#{ind} out of #{count} zipcodes"
+
+        if zc.total_donated.zero?
+            dem_zip = 0.0
+            rep_zip = 0.0
+            total_zip = 0.0
+
+            dem_zip_com = 0.0
+            rep_zip_com = 0.0
+            total_zip_com = 0.0
+
+            dem_zip_org = 0.0
+            rep_zip_org = 0.0
+            total_zip_org = 0.0
+
+            IndividualDonation
+                .search(zc.zip, fields: [{ zip: :exact }], select: [:amount], includes: [:committee], scroll: '1m')
+                .scroll do |batch|
+                    batch.each do |item|
+                        if %w[CCM COM PAC].include? item.entity_type
+                            dem_zip_com += item.amount if item.committee.comm_party == 'DEM'
+                            rep_zip_com += item.amount if item.committee.comm_party == 'REP'
+                            total_zip_com += item.amount
+                        elsif %w[PTY ORG].include? item.entity_type
+                            dem_zip_org += item.amount if item.committee.comm_party == 'DEM'
+                            rep_zip_org += item.amount if item.committee.comm_party == 'REP'
+                            total_zip_org += item.amount
+                        else
+                            dem_zip += item.amount if item.committee.comm_party == 'DEM'
+                            rep_zip += item.amount if item.committee.comm_party == 'REP'
+                            total_zip += item.amount
+                        end
+                    end
+                end
+            zc.total_donated = total_zip
+            zc.dem_donation = dem_zip
+            zc.rep_donation = rep_zip
+            zc.other_donation = total_zip - (dem_zip + rep_zip)
+
+            zc.total_donated_com = total_zip_com
+            zc.dem_donation_com = dem_zip_com
+            zc.rep_donation_com = rep_zip_com
+            zc.other_donation_com = total_zip_com - (dem_zip_com + rep_zip_com)
+
+            zc.total_donated_org = total_zip_org
+            zc.dem_donation_org = dem_zip_org
+            zc.rep_donation_org = rep_zip_org
+            zc.other_donation_org = total_zip_org - (dem_zip_org + rep_zip_org)
+            zc.save
+        end
+    rescue => exception
+        p exception
+    end
+end
+
+count = County.count
+County.all.each_with_index do |c, ind|
+    begin
+        p "#{ind} out of #{count} counties"
+
+        # if c.total_donated.zero?
+        c.total_donated = c.zip_codes.sum(:total_donated)
+        c.dem_donation = c.zip_codes.sum(:dem_donation)
+        c.rep_donation = c.zip_codes.sum(:rep_donation)
+        c.other_donation = c.zip_codes.sum(:other_donation)
+
+        c.total_donated_com = c.zip_codes.sum(:total_donated_com)
+        c.dem_donation_com = c.zip_codes.sum(:dem_donation_com)
+        c.rep_donation_com = c.zip_codes.sum(:rep_donation_com)
+        c.other_donation_com = c.zip_codes.sum(:other_donation_com)
+
+        c.total_donated_org = c.zip_codes.sum(:total_donated_org)
+        c.dem_donation_org = c.zip_codes.sum(:dem_donation_org)
+        c.rep_donation_org = c.zip_codes.sum(:rep_donation_org)
+        c.other_donation_org = c.zip_codes.sum(:other_donation_org)
+        c.save
+        # end
+    rescue => exception
+        p exception
+    end
+end
