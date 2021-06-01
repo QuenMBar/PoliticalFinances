@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-    before_action :authorized, only: %i[index link]
+    before_action :authorized, only: %i[index link update]
 
     def create
         user_params[:bio] = ''
@@ -33,10 +33,32 @@ class UsersController < ApplicationController
         render json: { msg: 'done' }
     end
 
+    def update
+        cu = current_user
+        cu.bio = bio_params[:bio]
+        cu.save(validate: false)
+        render json: UserSerializer.new(current_user).serializable_hash.to_json
+    end
+
+    def togglePrivate
+        cu = current_user
+        cu.privacy = priv_params[:state]
+        cu.save(validate: false)
+        render json: UserSerializer.new(current_user).serializable_hash.to_json
+    end
+
     private
 
     def user_params
         params.require(:user).permit(:username, :password, :type, :id, :jwt)
         # params.permit(:type, :id)
+    end
+
+    def bio_params
+        params.require(:user).permit(:bio)
+    end
+
+    def priv_params
+        params.require(:user).permit(:state)
     end
 end
