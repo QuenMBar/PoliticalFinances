@@ -47,6 +47,11 @@ class CountiesController < ApplicationController
                 },
             }
         end
+        response.set_header('Access-Control-Expose-Headers', '*')
+        response.set_header('total_donated', County.sum(:total_donated))
+        response.set_header('dem_donation', County.sum(:dem_donation))
+        response.set_header('rep_donation', County.sum(:rep_donation))
+        response.set_header('other_donation', County.sum(:other_donation))
         render json: geojson
     end
 end
