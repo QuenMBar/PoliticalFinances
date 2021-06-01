@@ -3,15 +3,19 @@ class UsersController < ApplicationController
 
     def create
         user_params[:bio] = ''
-        @user = User.create(user_params)
-        if @user.persisted?
-            render json: { "msg": 'Please Login' }
-        else
-            if User.find_by(username: user_params[:username])
-                render json: { "msg": 'Username Has Been Taken' }
+        if user_params[:username] != '' && user_params[:password] != ''
+            @user = User.create(user_params)
+            if @user.persisted?
+                render json: { "msg": 'Please Login' }
             else
-                render json: { "msg": 'Please Enter Password' }
+                if User.find_by(username: user_params[:username])
+                    render json: { "msg": 'Username Has Been Taken' }
+                else
+                    render json: { "msg": 'Please Enter Password' }
+                end
             end
+        else
+            render json: { "msg": 'Please Enter a Password And a Username' }
         end
     end
 
