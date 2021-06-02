@@ -41,12 +41,16 @@ class UsersController < ApplicationController
         case link_params[:type]
         when 'county'
             CountyLink.create(user: current_user, county_id: link_params[:id])
+        when 'zip_code'
+            ZipCodeLink.create(user: current_user, zip_code_id: link_params[:id])
+        when 'individual_donation'
+            IndividualDonationLink.create(user: current_user, individual_donation_id: link_params[:id])
         end
         render json: { msg: 'done' }
     end
 
     def unlink
-        p link_params[:id]
+        # p link_params[:id]
 
         case link_params[:type]
         when 'county'
