@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-    before_action :authorized, only: %i[index link update]
+    before_action :authorized, only: %i[index link update togglePrivate relations unlink]
 
     def create
         user_params[:bio] = ''
@@ -19,17 +19,44 @@ class UsersController < ApplicationController
         end
     end
 
+    def relations
+        render json: UserSlimSerializer.new(current_user).serializable_hash.to_json
+    end
+
     def index
-        render json: UserSerializer.new(current_user).serializable_hash.to_json
+        options = {}
+        options[:include] = [
+            :counties,
+            :zip_codes,
+            :'zip_codes.county',
+            :individual_donations,
+            :'individual_donations.committee',
+        ]
+        render json: UserSerializer.new(current_user, options).serializable_hash.to_json
     end
 
     def link
-        p user_params[:id]
+        # p link_params[:id]
 
-        case user_params[:type]
+        case link_params[:type]
         when 'county'
-            CountyLink.create(user: current_user, county_id: user_params[:id])
+            CountyLink.create(user: current_user, county_id: link_params[:id])
         end
+        render json: { msg: 'done' }
+    end
+
+    def unlink
+        p link_params[:id]
+
+        case link_params[:type]
+        when 'county'
+            CountyLink.find_by(user: current_user, county_id: link_params[:id]).destroy
+        when 'zip_code'
+            ZipCodeLink.find_by(user: current_user, zip_code_id: link_params[:id]).destroy
+        when 'individual_donation'
+            IndividualDonationLink.find_by(user: current_user, individual_donation_id: link_params[:id]).destroy
+        end
+
         render json: { msg: 'done' }
     end
 
@@ -37,14 +64,30 @@ class UsersController < ApplicationController
         cu = current_user
         cu.bio = bio_params[:bio]
         cu.save(validate: false)
-        render json: UserSerializer.new(current_user).serializable_hash.to_json
+        options = {}
+        options[:include] = [
+            :counties,
+            :zip_codes,
+            :'zip_codes.county',
+            :individual_donations,
+            :'individual_donations.committee',
+        ]
+        render json: UserSerializer.new(current_user, options).serializable_hash.to_json
     end
 
     def togglePrivate
         cu = current_user
         cu.privacy = priv_params[:state]
         cu.save(validate: false)
-        render json: UserSerializer.new(current_user).serializable_hash.to_json
+        options = {}
+        options[:include] = [
+            :counties,
+            :zip_codes,
+            :'zip_codes.county',
+            :individual_donations,
+            :'individual_donations.committee',
+        ]
+        render json: UserSerializer.new(current_user, options).serializable_hash.to_json
     end
 
     private
@@ -52,6 +95,10 @@ class UsersController < ApplicationController
     def user_params
         params.require(:user).permit(:username, :password, :type, :id, :jwt)
         # params.permit(:type, :id)
+    end
+
+    def link_params
+        params.require(:user).permit(:type, :id)
     end
 
     def bio_params
