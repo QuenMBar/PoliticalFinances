@@ -16,6 +16,7 @@ class CountiesController < ApplicationController
     def show
         begin
             results = County.includes(:zip_codes).find(params[:id])
+            p results
             options = {}
             options[:include] = [:zip_codes]
             render json: CountySerializer.new(results, options).serializable_hash.to_json

@@ -10,6 +10,9 @@ class ZipCodesController < ApplicationController
                                           amount: :desc,
                                       }
         options = { include: [:committee] }
-        render json: IndividualDonationSerializer.new(results, options).serializable_hash.to_json
+        render json: {
+                   zip: ZipCodeSerializer.new(ZipCode.find(params[:id]), { include: [:county] }).serializable_hash,
+                   id: IndividualDonationSerializer.new(results, options).serializable_hash,
+               }.to_json
     end
 end
