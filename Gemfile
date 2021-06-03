@@ -20,6 +20,7 @@ gem 'jwt'
 gem 'dotenv-rails'
 gem 'searchkick'
 gem "actionpack-page_caching"
+gem 'faker'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'

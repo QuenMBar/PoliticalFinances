@@ -10,6 +10,7 @@
 # OperationCost.destroy_all
 # County.destroy_all
 # ZipCode.destroy_all
+# User.destroy_all
 
 # puts 'Loading Committees and Pacs'
 
@@ -489,5 +490,27 @@
 #         # end
 #     rescue => exception
 #         p exception
+#     end
+# end
+
+# puts 'making fake users'
+
+# (0..20).each do |i|
+#     User.create(
+#         username: Faker::Name.first_name,
+#         password: Faker::Lorem.word,
+#         bio: Faker::Lorem.paragraph,
+#         privacy: [true, false].sample,
+#     )
+# end
+
+# User.all.each do |u|
+#     (0..rand(2..10)).each { |i| CountyLink.create(user: u, county: County.all.sample) }
+#     (0..rand(2..10)).each { |i| ZipCodeLink.create(user: u, zip_code: ZipCode.all.sample) }
+#     (0..rand(2..10)).each do |i|
+#         IndividualDonationLink.create(
+#             user: u,
+#             individual_donation: IndividualDonation.search('*', limit: 1000)[rand(0..999)],
+#         )
 #     end
 # end
