@@ -47,6 +47,10 @@ class UsersController < ApplicationController
             IndividualDonationLink.create(user: current_user, individual_donation_id: link_params[:id])
         when 'IndividualDonation'
             IndividualDonationLink.create(user: current_user, individual_donation_id: link_params[:id])
+        when 'County'
+            CountyLink.create(user: current_user, county_id: link_params[:id])
+        when 'ZipCode'
+            ZipCodeLink.create(user: current_user, zip_code_id: link_params[:id])
         end
         render json: { msg: 'done' }
     end
@@ -102,7 +106,11 @@ class UsersController < ApplicationController
         search_mods << IndividualDonation if setting['id']
         search_mods << ZipCode if setting['zc']
         search_mods << County if setting['cou']
-        results = Searchkick.search request.headers['search'], models: search_mods, page: 0, per_page: 20
+        results =
+            Searchkick.search request.headers['search'],
+                              models: search_mods,
+                              page: request.headers['page'],
+                              per_page: request.headers['rowsPerPage']
 
         # IndividualDonation.search params[:id],
         #                           fields: [{ zip: :exact }],
