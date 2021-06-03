@@ -1,15 +1,18 @@
 # require 'csv'
 
 # puts 'Deleting Current Data'
-# Politican.destroy_all
-# Committee.destroy_all
-# IndividualDonation.destroy_all
-# CandCommLinking.destroy_all
-# CommitteeTransfer.destroy_all
-# IndependentExpenditure.destroy_all
-# OperationCost.destroy_all
-# County.destroy_all
+# ZipCodeLink.destroy_all
+# CountyLink.destroy_all
+# IndividualDonationLink.destroy_all
 # ZipCode.destroy_all
+# IndependentExpenditure.destroy_all
+# IndividualDonation.destroy_all
+# CommitteeTransfer.destroy_all
+# CandCommLinking.destroy_all
+# Politican.destroy_all
+# OperationCost.destroy_all
+# Committee.destroy_all
+# County.destroy_all
 # User.destroy_all
 
 # puts 'Loading Committees and Pacs'
