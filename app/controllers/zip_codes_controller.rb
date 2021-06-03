@@ -28,7 +28,6 @@ class ZipCodesController < ApplicationController
                                           amount: :desc,
                                       }
 
-        # byebug
         options = { include: [:committee] }
         render json: {
                    zip: ZipCodeSerializer.new(ZipCode.find(params[:id]), { include: [:county] }).serializable_hash,

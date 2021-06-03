@@ -14,5 +14,6 @@ Rails
         put '/users/bio', to: 'users#update'
         put '/users/priv', to: 'users#togglePrivate'
         get '/users/relations', to: 'users#relations'
+        get '/search', to: 'users#search'
         # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
     end

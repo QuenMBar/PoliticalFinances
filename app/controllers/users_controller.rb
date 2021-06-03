@@ -45,6 +45,8 @@ class UsersController < ApplicationController
             ZipCodeLink.create(user: current_user, zip_code_id: link_params[:id])
         when 'individual_donation'
             IndividualDonationLink.create(user: current_user, individual_donation_id: link_params[:id])
+        when 'IndividualDonation'
+            IndividualDonationLink.create(user: current_user, individual_donation_id: link_params[:id])
         end
         render json: { msg: 'done' }
     end
@@ -92,6 +94,28 @@ class UsersController < ApplicationController
             :'individual_donations.committee',
         ]
         render json: UserSerializer.new(current_user, options).serializable_hash.to_json
+    end
+
+    def search
+        setting = JSON.parse(request.headers['options'])
+        search_mods = []
+        search_mods << IndividualDonation if setting['id']
+        search_mods << ZipCode if setting['zc']
+        search_mods << County if setting['cou']
+        results = Searchkick.search request.headers['search'], models: search_mods, page: 0, per_page: 20
+
+        # IndividualDonation.search params[:id],
+        #                           fields: [{ zip: :exact }],
+        #                           where: {
+        #                               entity_type: where_op,
+        #                           },
+        #                           page: request.headers['page'],
+        #                           per_page: request.headers['amount'],
+        #                           includes: [:committee],
+        #                           order: {
+        #                               amount: :desc,
+        #                           }
+        render json: results.map { |r| { type: r.class.name, object: r } }
     end
 
     private
