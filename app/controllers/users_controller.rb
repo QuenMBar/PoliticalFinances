@@ -65,6 +65,12 @@ class UsersController < ApplicationController
             ZipCodeLink.find_by(user: current_user, zip_code_id: link_params[:id]).destroy
         when 'individual_donation'
             IndividualDonationLink.find_by(user: current_user, individual_donation_id: link_params[:id]).destroy
+        when 'County'
+            CountyLink.find_by(user: current_user, county_id: link_params[:id]).destroy
+        when 'ZipCode'
+            ZipCodeLink.find_by(user: current_user, zip_code_id: link_params[:id]).destroy
+        when 'IndividualDonation'
+            IndividualDonationLink.find_by(user: current_user, individual_donation_id: link_params[:id]).destroy
         end
 
         render json: { msg: 'done' }
