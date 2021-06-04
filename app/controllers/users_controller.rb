@@ -112,9 +112,15 @@ class UsersController < ApplicationController
         search_mods << IndividualDonation if setting['id']
         search_mods << ZipCode if setting['zc']
         search_mods << County if setting['cou']
+        search_mods << User if setting['usr']
         results =
             Searchkick.search request.headers['search'],
                               models: search_mods,
+                              where: {
+                                  _not: {
+                                      privacy: true,
+                                  },
+                              },
                               page: request.headers['page'],
                               per_page: request.headers['rowsPerPage']
 
